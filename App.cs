@@ -3,6 +3,9 @@ using Raylib_cs;
 
 namespace ArcadianEngine
 {
+    /// <summary>
+    /// A Arcadian Engine project, may it be a app or a game.
+    /// </summary>
     public class App
     {
         /// <summary>
@@ -20,13 +23,6 @@ namespace ArcadianEngine
         /// </summary>
         AppData _data;
 
-        /// <summary>
-        /// A Arcadian Engine project, may it be a app or a game.
-        /// </summary>
-        /// <param name="windowTitle"></param>
-        /// <param name="windowWidth"></param>
-        /// <param name="windowHeigh"></param>
-        /// <param name="showDebugSufixInTitle"></param>
         public App(string windowTitle = "Arcadian Engine App", int windowWidth = 960, int windowHeigh = 540, bool showDebugSufixInTitle = true)
         {
             _data = new()
