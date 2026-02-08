@@ -27,7 +27,8 @@
 
 ## Version 0.4.0
 
-
+- HUD support v1.
+- Archtype ECS data structures visualiazation. 
 
 ## Version 0.5.0
 
