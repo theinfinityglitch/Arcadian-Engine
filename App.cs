@@ -44,15 +44,30 @@ namespace ArcadianEngine
 #endif
             Raylib.SetTargetFPS(60);
 
+            this.OnAppStart();
+
             while (!Raylib.WindowShouldClose())
             {
                 Raylib.BeginDrawing();
 
+                this.OnAppUpdate(Raylib.GetFrameTime());
+                this.OnAppDraw();
+
                 Raylib.EndDrawing();
             }
 
+            this.OnAppStop();
+
             Raylib.CloseWindow();
         }
+
+        public virtual void OnAppStart() { }
+
+        public virtual void OnAppUpdate(float deltaTime) { }
+
+        public virtual void OnAppDraw() { }
+
+        public virtual void OnAppStop() { }
 
         public void SetWindowTitle(string title)
         {
