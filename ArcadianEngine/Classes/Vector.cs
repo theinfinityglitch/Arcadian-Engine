@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ArcadianEngine.Types
+namespace ArcadianEngine.Classes
 {
     public struct Vector2i(int x, int y)
     {
