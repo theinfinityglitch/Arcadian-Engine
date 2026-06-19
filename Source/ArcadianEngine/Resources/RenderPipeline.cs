@@ -58,6 +58,7 @@ public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDi
 
         Context.Game.GraphicsDevice.SetRenderTarget(output);
         Context.Game.GraphicsDevice.Clear(Color.Black);
+        Context.Game._game.OnDraw();
 
         foreach (var (layer, commands) in _commands)
         {

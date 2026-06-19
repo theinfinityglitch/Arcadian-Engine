@@ -16,7 +16,7 @@ namespace ArcadianEngine;
 public partial class Game<TG> : Game
     where TG : ArcadianGame<TG>
 {
-    private readonly TG _game;
+    public readonly TG _game;
     private readonly GameContext<TG> _context;
     public GraphicsDeviceManager Graphics;
     public SpriteBatch spriteBatch = null!;
@@ -47,9 +47,9 @@ public partial class Game<TG> : Game
         ResourceContainer.Dispose();
     }
 
-    protected override void LoadContent()
+    protected override void Initialize()
     {
-        base.LoadContent();
+        base.Initialize();
 
         spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -65,13 +65,15 @@ public partial class Game<TG> : Game
         _context.InsertSystem<PostUpdate, TransformPropagationSystem>(
             new TransformPropagationSystem()
         );
-    }
-
-    protected override void BeginRun()
-    {
-        base.BeginRun();
 
         _game.OnInitialize();
+    }
+
+    protected override void LoadContent()
+    {
+        base.LoadContent();
+
+        _game.OnLoadContent();
     }
 
     protected override void Update(GameTime gameTime)
@@ -94,5 +96,19 @@ public partial class Game<TG> : Game
         rp.PresentToScreen(frame);
 
         base.Draw(gameTime);
+    }
+
+    protected override void EndDraw()
+    {
+        _game.OnAfterDraw();
+
+        base.EndDraw();
+    }
+
+    protected override void OnExiting(object sender, ExitingEventArgs args)
+    {
+        _game.OnClose();
+
+        base.OnExiting(sender, args);
     }
 }
