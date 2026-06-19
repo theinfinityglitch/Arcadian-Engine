@@ -27,16 +27,16 @@ public class GameContext<TG>(Game<TG> game)
         if (IsBorderlessWindow())
         {
             // Save current windowed bounds so we can restore them later
-            Game._windowedBounds = Game.Window.ClientBounds;
+            Game.WindowedBounds = Game.Window.ClientBounds;
 
             // Apply borderless fullscreen
-            Game._graphics.HardwareModeSwitch = false;
-            Game._graphics.IsFullScreen = true;
-            Game._graphics.PreferredBackBufferWidth = GraphicsAdapter
+            Game.Graphics.HardwareModeSwitch = false;
+            Game.Graphics.IsFullScreen = true;
+            Game.Graphics.PreferredBackBufferWidth = GraphicsAdapter
                 .DefaultAdapter
                 .CurrentDisplayMode
                 .Width;
-            Game._graphics.PreferredBackBufferHeight = GraphicsAdapter
+            Game.Graphics.PreferredBackBufferHeight = GraphicsAdapter
                 .DefaultAdapter
                 .CurrentDisplayMode
                 .Height;
@@ -45,15 +45,15 @@ public class GameContext<TG>(Game<TG> game)
         else
         {
             // Revert back to windowed
-            Game._graphics.IsFullScreen = false;
-            Game._graphics.HardwareModeSwitch = true;
+            Game.Graphics.IsFullScreen = false;
+            Game.Graphics.HardwareModeSwitch = true;
             Game.Window.IsBorderless = false;
 
-            Game._graphics.PreferredBackBufferWidth = Game._windowedBounds.Width;
-            Game._graphics.PreferredBackBufferHeight = Game._windowedBounds.Height;
+            Game.Graphics.PreferredBackBufferWidth = Game.WindowedBounds.Width;
+            Game.Graphics.PreferredBackBufferHeight = Game.WindowedBounds.Height;
         }
 
-        Game._graphics.ApplyChanges();
+        Game.Graphics.ApplyChanges();
 
         // On Windows, borderless window might not snap to (0,0) automatically
         if (IsBorderlessWindow())

@@ -18,9 +18,9 @@ public partial class Game<TG> : Game
 {
     private readonly TG _game;
     private readonly GameContext<TG> _context;
-    public GraphicsDeviceManager _graphics;
-    public SpriteBatch spriteBatch;
-    public Rectangle _windowedBounds;
+    public GraphicsDeviceManager Graphics;
+    public SpriteBatch spriteBatch = null!;
+    public Rectangle WindowedBounds;
 
     // public GraphicsAdapter adapter = GraphicsAdapter.DefaultAdapter;
 
@@ -38,7 +38,7 @@ public partial class Game<TG> : Game
         _context = new GameContext<TG>(this);
         ResourceContainer = new(_context);
         _game.Context = _context;
-        _graphics = new GraphicsDeviceManager(this);
+        Graphics = new GraphicsDeviceManager(this);
         GameStateMachine = new LinearStateMachine<TG>("GameStateMachine", _context);
     }
 
@@ -84,7 +84,7 @@ public partial class Game<TG> : Game
         resource?.Run();
     }
 
-    protected override void EndDraw()
+    protected override void Draw(GameTime gameTime)
     {
         if (!_context.TryGetResource<RenderPipeline<TG>>(out var rp))
             return;
@@ -93,6 +93,6 @@ public partial class Game<TG> : Game
 
         rp.PresentToScreen(frame);
 
-        base.EndDraw();
+        base.Draw(gameTime);
     }
 }

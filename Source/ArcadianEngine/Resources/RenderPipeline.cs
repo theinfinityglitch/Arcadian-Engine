@@ -48,12 +48,16 @@ public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDi
         var output = new RenderTarget2D(
             Context.Game.GraphicsDevice,
             Context.Game.GraphicsDevice.PresentationParameters.BackBufferWidth,
-            Context.Game.GraphicsDevice.PresentationParameters.BackBufferHeight
+            Context.Game.GraphicsDevice.PresentationParameters.BackBufferHeight,
+            false,
+            Context.Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
+            DepthFormat.None,
+            0,
+            RenderTargetUsage.PreserveContents
         );
 
         Context.Game.GraphicsDevice.SetRenderTarget(output);
         Context.Game.GraphicsDevice.Clear(Color.Black);
-        Context.Game.GraphicsDevice.SetRenderTarget(null);
 
         foreach (var (layer, commands) in _commands)
         {
