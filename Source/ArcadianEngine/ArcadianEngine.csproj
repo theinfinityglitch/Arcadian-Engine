@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <!--        <PublishAot>true</PublishAot>-->
+        <!--        <IsAotCompatible>true</IsAotCompatible>-->
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Friflo.Engine.ECS" Version="3.6.0" />
+        <PackageReference Include="Hexa.NET.ImGui" Version="2.2.9" />
+        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.*" />
+        <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.*" />
+    </ItemGroup>
+
+    <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Icon.ico" />
+    <None Remove="Icon.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icon.ico">
+      <LogicalName>Icon.ico</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icon.bmp">
+      <LogicalName>Icon.bmp</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="../../resources/default_font.ttf" Link="resources/default_font.ttf">
+            <LogicalName>default_font.ttf</LogicalName>
+        </EmbeddedResource>
+        <EmbeddedResource Include="../../resources/lucide.ttf" Link="resources/lucide.ttf">
+            <LogicalName>lucide.ttf</LogicalName>
+        </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Systems/" />
+    </ItemGroup>
+
+</Project>

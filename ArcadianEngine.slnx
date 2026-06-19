@@ -4,10 +4,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
 </Configurations>
-  <Folder Name="/EngineDependencies/">
-    <Project Path="raylib-cs/Raylib-cs/Raylib-cs.csproj" />
-    <Project Path="raylib-cs/Raylib-cs.Native/Raylib-cs.Native.csproj" />
-  </Folder>
-  <Project Path="src/ArcadianEngine.Editor/ArcadianEngine.Editor.csproj" />
-  <Project Path="src/ArcadianEngine/ArcadianEngine.csproj" />
+  <Project Path="Source/ArcadianEngine/ArcadianEngine.csproj" />
 </Solution>
