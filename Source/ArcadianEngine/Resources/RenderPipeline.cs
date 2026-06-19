@@ -60,11 +60,14 @@ public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDi
             var layerTex = GetOrCreateLayerTexture(layer);
 
             Context.Game.GraphicsDevice.SetRenderTarget(layerTex);
-            Context.Game.GraphicsDevice.Clear(Color.Black);
+            Context.Game.GraphicsDevice.Clear(Color.Transparent);
 
             Context.Game.spriteBatch.Begin();
             foreach (var cmd in commands)
+            {
+                cmd.Context = Context;
                 cmd.Execute();
+            }
             Context.Game.spriteBatch.End();
 
             Context.Game.GraphicsDevice.SetRenderTarget(null);
@@ -73,12 +76,7 @@ public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDi
             // // (apply per-layer shader here if needed)
             Context.Game.GraphicsDevice.SetRenderTarget(output);
             Context.Game.spriteBatch.Begin();
-            Context.Game.spriteBatch.Draw(
-                layerTex,
-                Vector2.Zero,
-                new Rectangle(0, 0, VirtualSize.X, -VirtualSize.Y),
-                Color.White
-            );
+            Context.Game.spriteBatch.Draw(layerTex, Vector2.Zero, null, Color.White);
             Context.Game.spriteBatch.End();
             Context.Game.GraphicsDevice.SetRenderTarget(null);
         }
@@ -107,8 +105,8 @@ public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDi
         Context.Game.spriteBatch.Begin();
         Context.Game.spriteBatch.Draw(
             frame,
-            new Rectangle(0, 0, VirtualSize.X, -VirtualSize.Y), // flip Y
-            new Rectangle(offsetX, offsetY, destW, destH),
+            new Rectangle(offsetX, offsetY, destW, destH), // destination: centered on screen with letterboxing
+            new Rectangle(0, 0, VirtualSize.X, VirtualSize.Y),
             Color.White
         );
         Context.Game.spriteBatch.End();

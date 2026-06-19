@@ -53,7 +53,10 @@ public partial class Game<TG> : Game
 
         spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        Vector2I windowSize = new(Window.ClientBounds.Width, Window.ClientBounds.Height);
+        Vector2I windowSize = new(
+            GraphicsDevice.PresentationParameters.BackBufferWidth,
+            GraphicsDevice.PresentationParameters.BackBufferHeight
+        );
         _context.InsertResource(new MainScheduleOrder<TG>());
         _context.InsertResource(new RenderPipeline<TG>(windowSize));
         // _context.InsertResource(new WorldHierarchyDebug<TG>(_context));
