@@ -6,9 +6,7 @@ namespace ArcadianEngine;
 public class ArcadianGame<TSelf>
     where TSelf : ArcadianGame<TSelf>
 {
-#pragma warning disable CS8618
-    public GameContext<TSelf> Context;
-#pragma warning restore CS8618
+    public GameContext<TSelf> Context = null!;
 
     /// <summary>
     /// Called once, when the executable for the game starts and initializes.

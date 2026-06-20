@@ -17,7 +17,7 @@ namespace ArcadianEngine;
 public partial class Game<TG>
     where TG : ArcadianGame<TG>
 {
-    private readonly TG _game;
+    public readonly TG _game;
     private readonly GameContext<TG> _context;
 
     public readonly ResourceContainer<TG> ResourceContainer;

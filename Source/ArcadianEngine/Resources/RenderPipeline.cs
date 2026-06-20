@@ -9,28 +9,33 @@ namespace ArcadianEngine.Resources;
 public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDisposable
     where TG : ArcadianGame<TG>
 {
-    private readonly SortedDictionary<int, List<DrawCommand>> _commands = [];
+    private readonly SortedDictionary<int, List<DrawCommand<TG>>> _commands = [];
     private readonly Dictionary<int, RenderTexture2D> _layerTextures = [];
     private readonly List<RenderTexture2D> _frameTextures = [];
 
     [Export]
     public Vector2I VirtualSize = virtualSize;
 
-    private void Draw(DrawCommand command)
+    private void Draw(DrawCommand<TG> command)
     {
-        if (!_commands.ContainsKey(command.layer))
-            _commands[command.layer] = [];
-        _commands[command.layer].Add(command);
+        if (!_commands.ContainsKey(command.Layer))
+            _commands[command.Layer] = [];
+        _commands[command.Layer].Add(command);
     }
 
     public void DrawSprite(Texture2D tex, Vector2 pos, int layer = 0, Color? tint = null)
     {
-        Draw(new DrawSpriteCommand(layer, tex, pos, tint ?? Color.White));
+        Draw(new DrawSpriteCommand<TG>(layer, tex, pos, tint ?? Color.White));
+    }
+
+    public void Clear(Color Color)
+    {
+        Draw(new DrawClearCommand<TG>(Color));
     }
 
     public void DrawRect(Rectangle rect, Color color, int layer = 0)
     {
-        Draw(new DrawRectCommand(layer, rect, color));
+        Draw(new DrawRectCommand<TG>(layer, rect, color));
     }
 
     public void DrawRectangle(
@@ -41,7 +46,7 @@ public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDi
         int layer = 0
     )
     {
-        Draw(new DrawRectangleCommand(layer, rect, origin, rotation, color));
+        Draw(new DrawRectangleCommand<TG>(layer, rect, origin, rotation, color));
     }
 
     public void DrawRing(
@@ -56,7 +61,7 @@ public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDi
     )
     {
         Draw(
-            new DrawRingCommand(
+            new DrawRingCommand<TG>(
                 layer,
                 center,
                 innerRadius,
@@ -85,7 +90,9 @@ public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDi
         var output = Raylib.LoadRenderTexture(VirtualSize.X, VirtualSize.Y);
 
         Raylib.BeginTextureMode(output);
-        Raylib.ClearBackground(Color.Black);
+        // Raylib.ClearBackground(Color.Black);
+
+        Context.Game._game.OnDraw();
         Raylib.EndTextureMode();
 
         foreach (var (layer, commands) in _commands)
@@ -96,7 +103,10 @@ public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDi
             Raylib.ClearBackground(Color.Blank);
 
             foreach (var cmd in commands)
+            {
+                cmd.Context = Context;
                 cmd.Execute();
+            }
 
             Raylib.EndTextureMode();
 
@@ -153,4 +163,3 @@ public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDi
         _frameTextures.Clear();
     }
 }
-
