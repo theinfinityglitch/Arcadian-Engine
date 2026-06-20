@@ -1,6 +1,7 @@
 using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using ArcadianEngine.Core;
 using ArcadianEngine.Math;
 using ArcadianEngine.Utils;
 using Friflo.Engine.ECS;
@@ -10,10 +11,9 @@ using Raylib_cs;
 
 namespace ArcadianEngine.Resources;
 
-public partial class WorldHierarchyDebug<TG>(GameContext<TG> cx)
-    where TG : class, IArcadianGame<TG>
+public partial class WorldHierarchyDebug<TG>() : Resource<TG>
+    where TG : ArcadianGame<TG>
 {
-    private readonly EntityStore _world = cx.Game.World;
     private readonly Dictionary<(int, Type), bool> _openInspectors = [];
     private readonly Dictionary<Type, Action<Entity, object>> _setterCache = [];
     private int? _selectedEntityId;
@@ -27,7 +27,7 @@ public partial class WorldHierarchyDebug<TG>(GameContext<TG> cx)
             var mainFlags = ImGuiTreeNodeFlags.SpanFullWidth | ImGuiTreeNodeFlags.FramePadding;
 
             // Resources node
-            var resources = cx.GetAllResources();
+            var resources = Context.GetAllResources();
             if (ImGui.TreeNodeEx($"{Lucide.Package} Resources", mainFlags))
             {
                 foreach (var (type, _) in resources)
@@ -57,7 +57,7 @@ public partial class WorldHierarchyDebug<TG>(GameContext<TG> cx)
             // Entities node
             if (ImGui.TreeNodeEx($"{Lucide.Boxes} Entities", mainFlags))
             {
-                foreach (var entity in _world.Entities)
+                foreach (var entity in Context.Game.World.Entities)
                 {
                     if (!entity.IsNull && entity.Parent.IsNull)
                         DrawEntity(entity);
@@ -78,7 +78,7 @@ public partial class WorldHierarchyDebug<TG>(GameContext<TG> cx)
                 continue;
 
             // Find the entity
-            var entity = _world.Entities.FirstOrDefault(e => e.Id == entityId);
+            var entity = Context.Game.World.Entities.FirstOrDefault(e => e.Id == entityId);
             if (entity.IsNull)
             {
                 _openInspectors.Remove(key);
@@ -209,7 +209,7 @@ public partial class WorldHierarchyDebug<TG>(GameContext<TG> cx)
 
     private void DrawSelectedEntity()
     {
-        var entity = _world.Entities.FirstOrDefault(e => e.Id == _selectedEntityId);
+        var entity = Context.Game.World.Entities.FirstOrDefault(e => e.Id == _selectedEntityId);
 
         if (entity.IsNull)
         {
@@ -319,7 +319,7 @@ public partial class WorldHierarchyDebug<TG>(GameContext<TG> cx)
 
     private void DrawSelectedResource()
     {
-        var resources = cx.GetAllResources();
+        var resources = Context.GetAllResources();
 
         if (!resources.TryGetValue(_selectedResourceType!, out var resource))
         {

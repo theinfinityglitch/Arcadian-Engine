@@ -7,7 +7,7 @@ using Raylib_cs;
 namespace ArcadianEngine;
 
 public class GameContext<TG>(Game<TG> game)
-    where TG : class, IArcadianGame<TG>
+    where TG : ArcadianGame<TG>
 {
     public Game<TG> Game { get; private set; } = game;
 
@@ -49,13 +49,13 @@ public class GameContext<TG>(Game<TG> game)
     }
 
     public void InsertResource<TRes>(TRes resource)
-        where TRes : class => Game.ResourceContainer.InsertResource(resource);
+        where TRes : Resource<TG> => Game.ResourceContainer.InsertResource(resource);
 
     public TRes GetResource<TRes>()
         where TRes : class => Game.ResourceContainer.GetResource<TRes>();
 
     public bool TryGetResource<TRes>([MaybeNullWhen(false)] out TRes resource)
-        where TRes : class => Game.ResourceContainer.TryGetResource(out resource);
+        where TRes : Resource<TG> => Game.ResourceContainer.TryGetResource(out resource);
 
     public IReadOnlyDictionary<Type, object> GetAllResources() =>
         Game.ResourceContainer.GetAllResources();

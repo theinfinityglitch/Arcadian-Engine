@@ -3,37 +3,42 @@ namespace ArcadianEngine;
 /// <summary>
 /// This is the main loop of a Arcadian Engine game. This has the callbacks to relevant events in the game.
 /// </summary>
-public interface IArcadianGame<TSelf> where TSelf : class, IArcadianGame<TSelf>
+public class ArcadianGame<TSelf>
+    where TSelf : ArcadianGame<TSelf>
 {
+#pragma warning disable CS8618
+    public GameContext<TSelf> Context;
+#pragma warning restore CS8618
+
     /// <summary>
     /// Called once, when the executable for the game starts and initializes.
     /// </summary>
-    public void OnInitialize(GameContext<TSelf> cx) { }
+    public virtual void OnInitialize() { }
 
-    public void OnLoadContent(GameContext<TSelf> cx) { }
+    public virtual void OnLoadContent() { }
 
     /// <summary>
     /// Called after each update.
     /// </summary>
-    public void OnUpdate(GameContext<TSelf> cx) { }
+    public virtual void OnUpdate(float deltaTime) { }
 
     /// <summary>
     /// Called before the draw step.
     /// </summary>
-    public void OnDraw(GameContext<TSelf> cx) { }
+    public virtual void OnDraw() { }
 
     /// <summary>
     /// Called after each draw.
     /// </summary>
-    public void OnAfterDraw(GameContext<TSelf> cx) { }
+    public virtual void OnAfterDraw() { }
 
     /// <summary>
     /// Called before a scene transition.
     /// </summary>
-    public void OnSceneTransition(GameContext<TSelf> cx) { }
+    public virtual void OnSceneTransition() { }
 
     /// <summary>
     /// Called once the game exits.
     /// </summary>
-    public void OnClose(GameContext<TSelf> cx) { }
+    public virtual void OnClose() { }
 }

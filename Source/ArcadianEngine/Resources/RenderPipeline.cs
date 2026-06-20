@@ -1,17 +1,20 @@
 using System.Numerics;
+using ArcadianEngine.Core;
 using ArcadianEngine.Drawing;
 using ArcadianEngine.Math;
 using Raylib_cs;
 
 namespace ArcadianEngine.Resources;
 
-public sealed class RenderPipeline(Vector2I virtualSize) : IDisposable
+public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDisposable
+    where TG : ArcadianGame<TG>
 {
     private readonly SortedDictionary<int, List<DrawCommand>> _commands = [];
     private readonly Dictionary<int, RenderTexture2D> _layerTextures = [];
     private readonly List<RenderTexture2D> _frameTextures = [];
 
-    [Export] public Vector2I VirtualSize = virtualSize;
+    [Export]
+    public Vector2I VirtualSize = virtualSize;
 
     private void Draw(DrawCommand command)
     {
@@ -30,15 +33,40 @@ public sealed class RenderPipeline(Vector2I virtualSize) : IDisposable
         Draw(new DrawRectCommand(layer, rect, color));
     }
 
-    public void DrawRectangle(Rectangle rect, Vector2 origin, float rotation, Color color, int layer = 0)
+    public void DrawRectangle(
+        Rectangle rect,
+        Vector2 origin,
+        float rotation,
+        Color color,
+        int layer = 0
+    )
     {
         Draw(new DrawRectangleCommand(layer, rect, origin, rotation, color));
     }
 
-    public void DrawRing(Vector2 center, float innerRadius, float outerRadius, float startAngle, float endAngle,
-        int segments, Color color, int layer)
+    public void DrawRing(
+        Vector2 center,
+        float innerRadius,
+        float outerRadius,
+        float startAngle,
+        float endAngle,
+        int segments,
+        Color color,
+        int layer
+    )
     {
-        Draw(new DrawRingCommand(layer, center, innerRadius, outerRadius, startAngle, endAngle, segments, color));
+        Draw(
+            new DrawRingCommand(
+                layer,
+                center,
+                innerRadius,
+                outerRadius,
+                startAngle,
+                endAngle,
+                segments,
+                color
+            )
+        );
     }
 
     private RenderTexture2D GetOrCreateLayerTexture(int layer)
@@ -96,10 +124,7 @@ public sealed class RenderPipeline(Vector2I virtualSize) : IDisposable
         var screenW = Raylib.GetRenderWidth();
         var screenH = Raylib.GetRenderHeight();
 
-        var scale = System.Math.Min(
-            (float)screenW / VirtualSize.X,
-            (float)screenH / VirtualSize.Y
-        );
+        var scale = System.Math.Min((float)screenW / VirtualSize.X, (float)screenH / VirtualSize.Y);
 
         var destW = (int)(VirtualSize.X * scale);
         var destH = (int)(VirtualSize.Y * scale);
@@ -128,3 +153,4 @@ public sealed class RenderPipeline(Vector2I virtualSize) : IDisposable
         _frameTextures.Clear();
     }
 }
+

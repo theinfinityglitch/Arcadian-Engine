@@ -1,9 +1,13 @@
 using System.Numerics;
+using ArcadianEngine.Core;
 using ArcadianEngine.Utils;
 using IconFonts;
 using ImGuiNET;
 
-public class ImGuiConsole
+namespace ArcadianEngine.Resources;
+
+public class ImGuiConsole<TG> : Resource<TG>
+    where TG : ArcadianGame<TG>
 {
     private readonly ImGuiConsoleWriter _writer = new();
     private bool _autoScroll = true;
@@ -58,3 +62,4 @@ public class ImGuiConsole
         ImGui.End();
     }
 }
+

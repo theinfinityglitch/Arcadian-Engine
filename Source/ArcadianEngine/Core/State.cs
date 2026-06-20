@@ -1,6 +1,7 @@
 ﻿namespace ArcadianEngine.Core;
 
-public class State<TG> where TG : class, IArcadianGame<TG>
+public class State<TG>
+    where TG : ArcadianGame<TG>
 {
     protected StateMachine<TG>? OwnerStateMachine;
 

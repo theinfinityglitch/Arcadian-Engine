@@ -3,26 +3,25 @@ using Friflo.Engine.ECS.Systems;
 
 namespace ArcadianEngine.Resources;
 
-public sealed class MainScheduleOrder<TG> : IScheduleOrder, IDisposable
-    where TG : class, IArcadianGame<TG>
+public sealed class MainScheduleOrder<TG> : Resource<TG>, IScheduleOrder, IDisposable
+    where TG : ArcadianGame<TG>
 {
     private readonly Dictionary<string, SystemRoot> _inner = [];
-    private readonly GameContext<TG> _context;
 
-    public MainScheduleOrder(GameContext<TG> cx)
+    public override void OnContextSet()
     {
-        _context = cx;
-
         InsertSchedule<PreUpdate>();
         InsertSchedule<Update>();
         InsertSchedule<PostUpdate>();
         InsertSchedule<Draw>();
+
+        base.OnContextSet();
     }
 
     public void InsertSchedule<T>()
         where T : struct, ISchedule
     {
-        SystemRoot schedule = new(_context.Game.World);
+        SystemRoot schedule = new(Context.Game.World);
 
         if (!_inner.TryAdd(typeof(T).Name, schedule))
             _inner[typeof(T).Name] = schedule;
@@ -62,4 +61,3 @@ public sealed class MainScheduleOrder<TG> : IScheduleOrder, IDisposable
         _inner.Clear();
     }
 }
-

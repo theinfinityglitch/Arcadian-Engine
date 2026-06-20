@@ -15,12 +15,12 @@ namespace ArcadianEngine;
 /// </summary>
 /// <typeparam name="TG">This is the main loop of an arcadian game. This has the callbacks to relevant events in the game.</typeparam>
 public partial class Game<TG>
-    where TG : class, IArcadianGame<TG>
+    where TG : ArcadianGame<TG>
 {
     private readonly TG _game;
     private readonly GameContext<TG> _context;
 
-    public readonly ResourceContainer ResourceContainer = new();
+    public readonly ResourceContainer<TG> ResourceContainer;
     public readonly EntityStore World = new();
     public readonly LinearStateMachine<TG> GameStateMachine;
     public bool ShouldClose = false;
@@ -38,6 +38,8 @@ public partial class Game<TG>
         _title = title;
         _windowSize = windowSize;
         _context = new GameContext<TG>(this);
+        ResourceContainer = new(_context);
+        _game.Context = _context;
         GameStateMachine = new LinearStateMachine<TG>("GameStateMachine", _context);
     }
 
@@ -64,7 +66,7 @@ public partial class Game<TG>
 
     private void DoInitialize()
     {
-        Raylib.SetConfigFlags(ConfigFlags.HighDpiWindow);
+        Raylib.SetConfigFlags(ConfigFlags.HighDpiWindow | ConfigFlags.ResizableWindow);
         Raylib.InitWindow(_windowSize.X, _windowSize.Y, _title);
         Raylib.SetTargetFPS(60);
 
@@ -92,10 +94,10 @@ public partial class Game<TG>
         });
 
         Initialize();
-        _game.OnInitialize(_context);
+        _game.OnInitialize();
 
         LoadContent();
-        _game.OnLoadContent(_context);
+        _game.OnLoadContent();
 
         GameStateMachine.Initialize();
     }
@@ -108,7 +110,7 @@ public partial class Game<TG>
         if (BeginDraw())
             Draw(Raylib.GetFrameTime());
 
-        _game.OnUpdate(_context);
+        _game.OnUpdate(Raylib.GetFrameTime());
         GameStateMachine.Update(Raylib.GetFrameTime());
         _context.GetResource<MainScheduleOrder<TG>>().Run();
         GameStateMachine.Draw();
@@ -165,17 +167,16 @@ public partial class Game<TG>
         if (_drawWorldInspector)
             _context.GetResource<WorldHierarchyDebug<TG>>().Draw();
         if (_drawConsole)
-            _context.GetResource<ImGuiConsole>().Draw();
+            _context.GetResource<ImGuiConsole<TG>>().Draw();
 #endif
 
         ImGuiRaylibBackend.End();
         Raylib.EndDrawing();
 
-        if (_context.TryGetResource<RenderPipeline>(out var pipeline))
+        if (_context.TryGetResource<RenderPipeline<TG>>(out var pipeline))
             pipeline.Dispose();
 
         if (Raylib.WindowShouldClose())
             _context.Quit();
     }
 }
-
