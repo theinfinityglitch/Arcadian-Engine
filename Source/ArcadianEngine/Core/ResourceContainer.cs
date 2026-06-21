@@ -9,10 +9,14 @@ public sealed class ResourceContainer<TG>(GameContext<TG> Context) : IDisposable
     public GameContext<TG> Context = Context;
 
     public void InsertResource<T>(T resource)
-        where T : Resource<TG>
+        where T : class
     {
-        resource.Context = Context;
-        resource.OnContextSet();
+        if (resource is Resource<TG> arcadianResource)
+        {
+            arcadianResource.Context = Context;
+            arcadianResource.OnContextSet();
+        }
+
         _resources[typeof(T)] = resource;
     }
 
@@ -31,13 +35,13 @@ public sealed class ResourceContainer<TG>(GameContext<TG> Context) : IDisposable
     }
 
     public bool HasResource<T>()
-        where T : Resource<TG>
+        where T : class
     {
         return _resources.ContainsKey(typeof(T));
     }
 
     public bool TryGetResource<T>([MaybeNullWhen(false)] out T resource)
-        where T : Resource<TG>
+        where T : class
     {
         if (_resources.TryGetValue(typeof(T), out var obj))
         {
@@ -58,4 +62,3 @@ public sealed class ResourceContainer<TG>(GameContext<TG> Context) : IDisposable
         _resources.Clear();
     }
 }
-

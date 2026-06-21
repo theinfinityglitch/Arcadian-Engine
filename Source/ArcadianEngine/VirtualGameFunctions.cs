@@ -14,7 +14,7 @@ public partial class Game<TG>
         _context.InsertResource(new MainScheduleOrder<TG>());
         _context.InsertResource(new RenderPipeline<TG>(_windowSize));
         _context.InsertResource(new WorldHierarchyDebug<TG>());
-        _context.InsertResource(new ImGuiConsole<TG>());
+        _context.InsertResource(new ImGuiConsole());
 
         _context
             .GetResource<MainScheduleOrder<TG>>()

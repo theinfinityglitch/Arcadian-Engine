@@ -49,13 +49,13 @@ public class GameContext<TG>(Game<TG> game)
     }
 
     public void InsertResource<TRes>(TRes resource)
-        where TRes : Resource<TG> => Game.ResourceContainer.InsertResource(resource);
+        where TRes : class => Game.ResourceContainer.InsertResource(resource);
 
     public TRes GetResource<TRes>()
         where TRes : class => Game.ResourceContainer.GetResource<TRes>();
 
     public bool TryGetResource<TRes>([MaybeNullWhen(false)] out TRes resource)
-        where TRes : Resource<TG> => Game.ResourceContainer.TryGetResource(out resource);
+        where TRes : class => Game.ResourceContainer.TryGetResource(out resource);
 
     public IReadOnlyDictionary<Type, object> GetAllResources() =>
         Game.ResourceContainer.GetAllResources();

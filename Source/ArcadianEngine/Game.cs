@@ -167,7 +167,7 @@ public partial class Game<TG>
         if (_drawWorldInspector)
             _context.GetResource<WorldHierarchyDebug<TG>>().Draw();
         if (_drawConsole)
-            _context.GetResource<ImGuiConsole<TG>>().Draw();
+            _context.GetResource<ImGuiConsole>().Draw();
 #endif
 
         ImGuiRaylibBackend.End();
