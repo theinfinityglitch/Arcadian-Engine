@@ -66,7 +66,7 @@ public partial class Game<TG>
 
     private void DoInitialize()
     {
-        Raylib.SetConfigFlags(ConfigFlags.HighDpiWindow | ConfigFlags.ResizableWindow);
+        Raylib.SetConfigFlags(ConfigFlags.HighDpiWindow);
         Raylib.InitWindow(_windowSize.X, _windowSize.Y, _title);
         Raylib.SetTargetFPS(60);
 

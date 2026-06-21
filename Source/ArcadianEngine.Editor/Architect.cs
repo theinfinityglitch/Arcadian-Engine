@@ -2,13 +2,14 @@
 
 namespace ArcadianEngine.Editor;
 
-public partial class Architect<TG>(TG game, string title, Vector2I windowSize) : Game<TG>(game, title, windowSize)
-    where TG : class, IArcadianGame<TG>
+public partial class Architect<TG>(TG game, string title, Vector2I windowSize)
+    : Game<TG>(game, title, windowSize)
+    where TG : ArcadianGame<TG>
 {
     protected override void Initialize()
     {
         Console.WriteLine("Test");
-        
+
         base.Initialize();
     }
 
@@ -27,3 +28,4 @@ public partial class Architect<TG>(TG game, string title, Vector2I windowSize) :
         base.Draw(deltaTime);
     }
 }
+
