@@ -113,7 +113,6 @@ public partial class Game<TG>
         _game.OnUpdate(Raylib.GetFrameTime());
         GameStateMachine.Update(Raylib.GetFrameTime());
         _context.GetResource<MainScheduleOrder<TG>>().Run();
-        GameStateMachine.Draw();
 
         Raylib.BeginDrawing();
 

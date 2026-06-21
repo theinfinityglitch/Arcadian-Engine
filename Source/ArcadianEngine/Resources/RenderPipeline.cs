@@ -90,9 +90,8 @@ public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDi
         var output = Raylib.LoadRenderTexture(VirtualSize.X, VirtualSize.Y);
 
         Raylib.BeginTextureMode(output);
-        // Raylib.ClearBackground(Color.Black);
-
         Context.Game._game.OnDraw();
+        Context.Game.GameStateMachine.Draw();
         Raylib.EndTextureMode();
 
         foreach (var (layer, commands) in _commands)
