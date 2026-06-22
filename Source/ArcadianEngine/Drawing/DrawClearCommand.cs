@@ -2,7 +2,7 @@ using Raylib_cs;
 
 namespace ArcadianEngine.Drawing;
 
-public record DrawClearCommand<TG>(Color Color, int Layer) : DrawCommand<TG>(Layer)
+public record DrawClearCommand<TG>(Color Color, int Layer = 0) : DrawCommand<TG>(Layer)
     where TG : ArcadianGame<TG>
 {
     public DrawClearCommand(Color Color)
@@ -13,4 +13,3 @@ public record DrawClearCommand<TG>(Color Color, int Layer) : DrawCommand<TG>(Lay
         Raylib.ClearBackground(Color);
     }
 }
-

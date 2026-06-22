@@ -3,10 +3,9 @@ using Raylib_cs;
 
 namespace ArcadianEngine.Drawing;
 
-public record class DrawRingCommand<TG>(
+public record DrawCircleSectorCommand<TG>(
     Vector2 Center,
-    float InnerRadius,
-    float OuterRadius,
+    float Radius,
     float StartAngle,
     float EndAngle,
     int Segments,
@@ -15,6 +14,8 @@ public record class DrawRingCommand<TG>(
 ) : DrawCommand<TG>(Layer)
     where TG : ArcadianGame<TG>
 {
-    public override void Execute() =>
-        Raylib.DrawRing(Center, InnerRadius, OuterRadius, StartAngle, EndAngle, Segments, Color);
+    public override void Execute()
+    {
+        Raylib.DrawCircleSector(Center, Radius, StartAngle, EndAngle, Segments, Color);
+    }
 }

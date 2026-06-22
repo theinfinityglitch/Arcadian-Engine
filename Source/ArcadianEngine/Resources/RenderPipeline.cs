@@ -28,9 +28,9 @@ public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDi
         Draw(new DrawSpriteCommand<TG>(layer, tex, pos, tint ?? Color.White));
     }
 
-    public void Clear(Color Color)
+    public void Clear(Color color)
     {
-        Draw(new DrawClearCommand<TG>(Color));
+        Draw(new DrawClearCommand<TG>(color));
     }
 
     public void DrawRect(Rectangle rect, Color color, int layer = 0)
@@ -57,21 +57,49 @@ public sealed class RenderPipeline<TG>(Vector2I virtualSize) : Resource<TG>, IDi
         float endAngle,
         int segments,
         Color color,
-        int layer
+        int layer = 0
     )
     {
         Draw(
             new DrawRingCommand<TG>(
-                layer,
                 center,
                 innerRadius,
                 outerRadius,
                 startAngle,
                 endAngle,
                 segments,
-                color
+                color,
+                layer
             )
         );
+    }
+
+    public void DrawCircleSector(
+        Vector2 center,
+        float radius,
+        float startAngle,
+        float endAngle,
+        int segments,
+        Color color,
+        int layer = 0
+    )
+    {
+        Draw(
+            new DrawCircleSectorCommand<TG>(
+                center,
+                radius,
+                startAngle,
+                endAngle,
+                segments,
+                color,
+                layer
+            )
+        );
+    }
+
+    public void DrawTriangle(Vector2 v1, Vector2 v2, Vector2 v3, Color color, int layer = 0)
+    {
+        Draw(new DrawTriangleCommand<TG>(v1, v2, v3, color, layer));
     }
 
     private RenderTexture2D GetOrCreateLayerTexture(int layer)
