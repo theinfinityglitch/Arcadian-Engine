@@ -11,14 +11,12 @@ public partial class Game<TG>
     /// </summary>
     protected virtual void Initialize()
     {
-        _context.InsertResource(new MainScheduleOrder<TG>());
+        _context
+            .InsertResource(new MainScheduleOrder<TG>())
+            .InsertSystem<PostUpdate, TransformPropagationSystem>(new TransformPropagationSystem());
         _context.InsertResource(new RenderPipeline<TG>(_windowSize));
         _context.InsertResource(new WorldHierarchyDebug<TG>());
         _context.InsertResource(new ImGuiConsole());
-
-        _context
-            .GetResource<MainScheduleOrder<TG>>()
-            .InsertSystem<PostUpdate, TransformPropagationSystem>(new TransformPropagationSystem());
     }
 
     /// <summary>
