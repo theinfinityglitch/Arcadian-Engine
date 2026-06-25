@@ -8,7 +8,7 @@ public sealed class ResourceContainer<TG>(GameContext<TG> Context) : IDisposable
     private readonly Dictionary<Type, object> _resources = [];
     public GameContext<TG> Context = Context;
 
-    public void InsertResource<T>(T resource)
+    public T InsertResource<T>(T resource)
         where T : class
     {
         if (resource is Resource<TG> arcadianResource)
@@ -18,6 +18,8 @@ public sealed class ResourceContainer<TG>(GameContext<TG> Context) : IDisposable
         }
 
         _resources[typeof(T)] = resource;
+
+        return resource;
     }
 
     public T GetResource<T>()

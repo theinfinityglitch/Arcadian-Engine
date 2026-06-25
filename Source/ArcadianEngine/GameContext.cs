@@ -48,7 +48,7 @@ public class GameContext<TG>(Game<TG> game)
         GetResource<MainScheduleOrder<TG>>().RemoveSystem<T>(system);
     }
 
-    public void InsertResource<TRes>(TRes resource)
+    public TRes InsertResource<TRes>(TRes resource)
         where TRes : class => Game.ResourceContainer.InsertResource(resource);
 
     public TRes GetResource<TRes>()
