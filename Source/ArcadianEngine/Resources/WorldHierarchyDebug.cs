@@ -471,12 +471,14 @@ public partial class WorldHierarchyDebug<TG>() : Resource<TG>
         if (value != null && value.GetType().IsEnum)
             return DrawEnumField(fieldName, value);
 
+        var treeNodeFlags = ImGuiTreeNodeFlags.SpanFullWidth | ImGuiTreeNodeFlags.FramePadding;
+
         // Dictionary fields
         if (value is IDictionary dictionary)
         {
             bool modified = false;
 
-            if (ImGui.TreeNode(fieldName))
+            if (ImGui.TreeNodeEx(fieldName, treeNodeFlags))
             {
                 foreach (DictionaryEntry entry in dictionary)
                 {
@@ -511,7 +513,7 @@ public partial class WorldHierarchyDebug<TG>() : Resource<TG>
         {
             bool modified = false;
 
-            if (ImGui.TreeNode(fieldName))
+            if (ImGui.TreeNodeEx(fieldName, treeNodeFlags))
             {
                 for (int i = 0; i < list.Count; i++)
                 {
