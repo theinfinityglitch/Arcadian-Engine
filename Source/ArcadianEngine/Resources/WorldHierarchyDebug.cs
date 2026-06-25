@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -424,6 +425,35 @@ public partial class WorldHierarchyDebug<TG>() : Resource<TG>
         entity.Set(typed); // called generically, no ref issues
     }
 
+    private (bool modified, object? value) DrawEnumField(string label, object value)
+    {
+        var enumType = value.GetType();
+
+        string currentValue = value.ToString()!;
+        string[] names = Enum.GetNames(enumType);
+
+        if (ImGui.BeginCombo(label, currentValue))
+        {
+            foreach (string enumName in names)
+            {
+                bool selected = enumName == currentValue;
+
+                if (ImGui.Selectable(enumName, selected))
+                {
+                    ImGui.EndCombo();
+                    return (true, Enum.Parse(enumType, enumName));
+                }
+
+                if (selected)
+                    ImGui.SetItemDefaultFocus();
+            }
+
+            ImGui.EndCombo();
+        }
+
+        return (false, value);
+    }
+
     private (bool modified, object? value) DrawEditableField(
         string differentialName,
         string name,
@@ -434,8 +464,79 @@ public partial class WorldHierarchyDebug<TG>() : Resource<TG>
         var spaced = FieldRegex().Replace(name, " $1").Trim();
 
         // 2. Capitalize the first letter of the entire string
-        var fieldName = char.ToUpper(spaced[0]) + spaced[1..];
-        fieldName += $"##{differentialName}";
+        var formatedName = char.ToUpper(spaced[0]) + spaced[1..];
+        var fieldName = $"{formatedName}##{differentialName}";
+
+        // Enum fields
+        if (value != null && value.GetType().IsEnum)
+            return DrawEnumField(fieldName, value);
+
+        // Dictionary fields
+        if (value is IDictionary dictionary)
+        {
+            bool modified = false;
+
+            if (ImGui.TreeNode(fieldName))
+            {
+                foreach (DictionaryEntry entry in dictionary)
+                {
+                    ImGui.PushID(entry.Key?.ToString());
+
+                    ImGui.Text(entry.Key?.ToString() ?? "null");
+                    ImGui.SameLine(120);
+
+                    var (entryModified, newValue) = DrawEditableField(
+                        $"{differentialName}_{entry.Key}",
+                        "Value",
+                        entry.Value
+                    );
+
+                    if (entryModified && entry.Key != null)
+                    {
+                        dictionary[entry.Key] = newValue;
+                        modified = true;
+                    }
+
+                    ImGui.PopID();
+                }
+
+                ImGui.TreePop();
+            }
+
+            return (modified, value);
+        }
+
+        // Lists
+        if (value is IList list && value is not string)
+        {
+            bool modified = false;
+
+            if (ImGui.TreeNode(fieldName))
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    ImGui.PushID(i);
+
+                    var (itemModified, newValue) = DrawEditableField(
+                        $"{differentialName}_{i}",
+                        $"[{i}]",
+                        list[i]
+                    );
+
+                    if (itemModified)
+                    {
+                        list[i] = newValue;
+                        modified = true;
+                    }
+
+                    ImGui.PopID();
+                }
+
+                ImGui.TreePop();
+            }
+
+            return (modified, value);
+        }
 
         switch (value)
         {
@@ -469,7 +570,6 @@ public partial class WorldHierarchyDebug<TG>() : Resource<TG>
             {
                 Vector3 imVec = new(v.X, v.Y, v.Z);
                 ImGui.DragFloat3(fieldName, ref imVec);
-                // bool changed = ImGui.IsItemDeactivatedAfterEdit();
                 return (ImGui.IsItemEdited(), new Vector3(imVec.X, imVec.Y, imVec.Z));
             }
             case Vector2I v:
@@ -477,25 +577,6 @@ public partial class WorldHierarchyDebug<TG>() : Resource<TG>
                 int[] vir = [v.X, v.Y];
                 ImGui.DragInt2(fieldName, ref vir[0]);
                 return (ImGui.IsItemEdited(), new Vector2I(vir[0], vir[1]));
-            }
-            case List<int> li:
-            {
-                var selectedIdx = 0;
-                if (ImGui.BeginListBox(fieldName))
-                {
-                    foreach (var i in li)
-                    {
-                        var isSelected = selectedIdx == i;
-                        if (ImGui.Selectable($"{i}", isSelected))
-                            selectedIdx = i;
-
-                        if (isSelected)
-                            ImGui.SetItemDefaultFocus();
-                    }
-                    ImGui.EndListBox();
-                }
-
-                return (false, li);
             }
             case Color c:
             {
